@@ -38,3 +38,9 @@ After analyzing these elements, identify the one part of the case study that you
 ## Summarizing the January 6th Committee Testimony
 
 While investigating the invasion of the U.S. Capitol by supporters of defeated presidential candidate Donald Trump on January 6th, 2020, a committee of congresspeople received over 300 pieces of primary-source testimony related to the event. Text transcripts are available from [the government](https://www.govinfo.gov/collection/january-6th-committee-final-report?path=/gpo/January%206th%20Committee%20Final%20Report%20and%20Supporting%20Materials%20Collection/Supporting%20Materials%20-%20Transcribed%20Interviews%20and%20Depositions/%7B%22pageSize%22%3A%22200%22%2C%22offset%22%3A%221%22%7D) and have also been downloaded into a .pdf collection 
+
+## Discussion Questions
+
+How does the qualitative/quantitative distinction work when quantitative elements are used inside qualitative research? Is there a key quality of the study that makes it qualitative, no matter how many statistical or experimental techniques it uses? Or is it a matter of proportions, such that it remains qualitative as long as the statistical/experimental components are below a certain threshold? Discuss with respect to examples that make good use of different mixes of these techniques.
+
+What are the major practical challenges to adopting quantitative/experimental designs within case studies? Do they involve resources, training, scholarly culture, epistemology, or something else? Explain and justify your answer.
