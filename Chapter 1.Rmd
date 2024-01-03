@@ -1,0 +1,42 @@
+---
+title: "Chapter 1 Exercises and Supporting Materials"
+author: "J. Seawright"
+date: "2024-01-03"
+output:
+  html_document:
+    css: lab.css
+    highlight: pygments
+    theme: sandstone
+    toc: true
+    toc_float: true
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(eval = TRUE, results = FALSE)
+library(tidyverse)
+library(openintro)
+```
+
+## Multi-Method Elements in Snow on Cholera
+
+In 1855, the English epidemiologist, John Snow, published a book correctly identifying the mode of transmission of cholera. This book has subsequently become a paradigmatic case of successful causal inference for social science methodologists. The book is available in [delightfully old-fashioned html](http://www.ph.ucla.edu/epi/snow/snowbook.html).
+
+Please examine the study, identifying quantitative and qualitative components of the causal inference. (Note that statistics was not fully developed at the time, and so quantitative components may lack some features that we expect in contemporary research.) Focus primarily on Part 3 of the book.
+
+Explain what each component contributes to the causal inference. Does Snow's multi-method research make the causal inference more powerful than it would be as a purely quantitative study? If so, explain why.
+
+## Mixed- and multi-method research in contemporary practice
+
+Select a published article in an area that interests you that uses a mixed-/multi-method design. How does it work? What does each method contribute, and how do they work together? What kind of research design is it?
+
+If it is a triangulation-type design, what would have to change to turn this design into an integrative design? Be as specific as possible about how to rework the study using integrative multi-method design. In what ways would your proposed integrative version of the article be better than the original version? In what ways might it be weaker?
+
+If it is an integrative design, how would it have been different had it been a triangulation design? What would have been better and what would have been worse? Again, be as specific as you can.
+
+This exercise can usefully turn into a group project if multiple articles on the same topic are collected and compared.
+	
+## Introduction to R
+
+These exercises will guide the reader through some uses of the statistical programming language, R. R is, of course, one of the most commonly used statistical tools in the quantitative social sciences, and as such, many readers will have some significant degree of prior familiarity with it. However, it is likely that some will have had little or no prior exposure --- or will have done some work with R but may feel uncertain about their mastery nonetheless.
+
+For readers in these groups, there is no need to fear. The exercises are written to help. Even so, we can recommend the [OpenIntro Statistics curriculum](https://www.openintro.org/book/os/) as a friendly first exposure, or refresher, on R. In particular, we find the [Intro to R](https://openintrostat.github.io/oilabs-tidy/01_intro_to_r/intro_to_r.html) and the [Intro to Data](https://openintrostat.github.io/oilabs-tidy/02_intro_to_data/intro_to_data.html) pages extremely helpful in settling nerves about R and conveying the basic skills that are useful for the exercises to follow --- and for statistical computing in general! 
