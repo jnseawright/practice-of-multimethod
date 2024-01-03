@@ -1,2 +1,2 @@
-# The Practice of Multi-Method Research
-This repository contains supporting materials, exercises, code, and data for the book, the Practice of Multi-Method Research, by Jason Seawright and Kendra Koivu. Here you will find chapter-by-chapter exercises, discussion questions, code examples for several quantitative and otherwise computer-intensive elements of multi-method design, and supporting data sets. These may be of some stand-alone value, and are freely available for use, but will be most interpretable and of greatest worth in conjunction with the book they were designed to support.
+# practice-of-multimethod
+Supporting materials, exercises, code, and data for the book, the Practice of Multi-Method Research.

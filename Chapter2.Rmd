@@ -1,0 +1,47 @@
+---
+title: "Chapter 2 Exercises and Supporting Materials"
+author: "J. Seawright"
+date: "2024-01-02"
+output:
+  html_document:
+    css: lab.css
+    highlight: pygments
+    theme: sandstone
+    toc: true
+    toc_float: true
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(eval = TRUE, results = FALSE)
+library(tidyverse)
+library(openintro)
+```
+
+## Process tracing
+
+Qualitative researchers have done exceptional work assembling exercises and examples to help scholars work through ideas connected with process tracing. The [exercises assembled by David Collier](http://polisci.berkeley.edu/sites/default/files/people/u3827/Teaching%20Process%20Tracing.pdf) are an outstanding exemplar. As a check on understanding, a skill-building exercise, or even for the sheer pleasure of the intellectual exercise, we recommend working through at least several of them.
+
+
+## Focus group for process tracing
+
+Join a group of about 4 other students. Come up with (a) a causal question, (b) a main hypothesis for which students in this class are a part of the relevant population and a focus group could be a source of potentially useful causal process observations, and (c) a set of plausible alternative hypotheses. Think about possible implications of each hypothesis and devise questions and activities for your focus group to test at least some of those implications.
+
+Plan a focus group (if this is a new method for you, [Jennifer Cyr's book](https://www.cambridge.org/core/books/focus-groups-for-the-social-science-researcher/F84DFB3576AD203DB1B495F97E10BB9D) is an exceptional resource), preparing a list of questions, topics, or tasks that have a good chance of producing relevant causal-process observations. List these out explicitly, and explain your reasoning. Pair up with another group and carry out your focus group plan. Return the favor by also serving as a focus group for them.
+
+Now, with your group, carry out process tracing. Did the focus group produce evidence that fits your theory but is hard to explain given other theories, or not? Alternatively, did you discover ideas for new theories that you did not initially expect?
+
+How could a survey be most helpful in expanding on what you have learned?
+
+## Process-tracing elite messaging on climate change
+
+Public opinion research suggests that American public opinion on climate change follows many of the same patterns as the other, polarized, party-encrusted divides that have prevented policy movement on issues such as inequality, gun violence, immigration, public health, and many other areas of concern to Americans and the rest of the world. 
+
+How and especially why have American elites chosen specific messages about climate change over time? Surely we can all come up with our own ideas and hypotheses, and there is value to this exercise! So start by listing your own preferred hypothesis about how American political elites talk about climate change, and why.
+
+Of course, as we know, good process tracing requires the best available understanding of the subject matter in order to provide us with the most comprehensive possible set of alternative explanations. Many of us are not subject-matter experts on the politics of climate change! How can we efficiently move in the direction of this kind of understanding?
+
+## Discussion Questions
+
+In what ways does it make a difference for multi-method design whether a qualitative scholar is engaged in a form of process tracing versus some other kind of qualitative method?
+
+This book's discussion of process tracing has drawn on Bayesian ideas, but has not gone all the way toward full formal Bayesian math. Would it be helpful for multi-method research if qualitative scholars fully formalized their research as Bayesian statistical problems, or would that get in the way of the qualitative scholarship? 

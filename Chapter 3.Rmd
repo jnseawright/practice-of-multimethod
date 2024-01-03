@@ -1,0 +1,40 @@
+---
+title: "Chapter 3 Exercises and Supporting Materials"
+author: "J. Seawright"
+date: "2024-01-02"
+output:
+  html_document:
+    css: lab.css
+    highlight: pygments
+    theme: sandstone
+    toc: true
+    toc_float: true
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(eval = TRUE, results = FALSE)
+library(tidyverse)
+library(openintro)
+```
+
+## Analyze and enhance a case study
+
+A key component of designing good multi-method research based on case studies is carefully analyzing how existing case studies are actually doing their work. We cannot build productively on foundations we don't understand!
+
+Choose a published qualitative/case study analysis on a topic that interests you, and identify the elements of that case study that contribute to causal inference. After specifying the central causal hypothesis or hypotheses, please determine which components, if any, of the research design play each of the following roles.
+
+* Help identify counterfactuals
+
+* Carry out process-tracing tests
+
+* Refine measurement
+
+* Analyze causal flows
+
+* Discover new variables
+
+After analyzing these elements, identify the one part of the case study that you think is the least developed. Propose a quantitative or machine-learning design that could enhance this element. Be as specific as possible. Identify particular data sources, research strategies, and statistical approaches if possible. What would we learn from the quantitative work that would enhance the existing case study?
+
+## Summarizing the January 6th Committee Testimony
+
+While investigating the invasion of the U.S. Capitol by supporters of defeated presidential candidate Donald Trump on January 6th, 2020, a committee of congresspeople received over 300 pieces of primary-source testimony related to the event. Text transcripts are available from [the government](https://www.govinfo.gov/collection/january-6th-committee-final-report?path=/gpo/January%206th%20Committee%20Final%20Report%20and%20Supporting%20Materials%20Collection/Supporting%20Materials%20-%20Transcribed%20Interviews%20and%20Depositions/%7B%22pageSize%22%3A%22200%22%2C%22offset%22%3A%221%22%7D) and have also been downloaded into a .pdf collection 
