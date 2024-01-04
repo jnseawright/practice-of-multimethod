@@ -37,7 +37,85 @@ After analyzing these elements, identify the one part of the case study that you
 
 ## Summarizing the January 6th Committee Testimony
 
-While investigating the invasion of the U.S. Capitol by supporters of defeated presidential candidate Donald Trump on January 6th, 2020, a committee of congresspeople received over 300 pieces of primary-source testimony related to the event. Text transcripts are available from [the government](https://www.govinfo.gov/collection/january-6th-committee-final-report?path=/gpo/January%206th%20Committee%20Final%20Report%20and%20Supporting%20Materials%20Collection/Supporting%20Materials%20-%20Transcribed%20Interviews%20and%20Depositions/%7B%22pageSize%22%3A%22200%22%2C%22offset%22%3A%221%22%7D) and have also been downloaded into a .pdf collection 
+While investigating the invasion of the U.S. Capitol by supporters of defeated presidential candidate Donald Trump on January 6th, 2020, a committee of congresspeople received 274 publicly disclosed documents of primary-source testimony related to the event. Text transcripts are available from [the government](https://www.govinfo.gov/collection/january-6th-committee-final-report?path=/gpo/January%206th%20Committee%20Final%20Report%20and%20Supporting%20Materials%20Collection/Supporting%20Materials%20-%20Transcribed%20Interviews%20and%20Depositions/%7B%22pageSize%22%3A%22200%22%2C%22offset%22%3A%221%22%7D) and have also been downloaded into a .pdf collection on this book's [github repository](https://github.com/jnseawright/practice-of-multimethod/tree/main/jan6th).
+
+It is possible to read through all of these documents given sufficient time, and to carefully take notes on their contents! Such is the nature of qualitative research. However, it is often useful to have a synthetic, summary picture of their contents and of the relative position of each document within that overall structure. Our first step is to read the files into R. We want to start by building a list inside R of all the files that we need to read into our computer. If you have never read a .pdf file into R before, you should start by running the following command to teach your installation of R how to interact with  files:
+
+```{r, echo=TRUE}
+#install.packages("pdftools")
+```
+
+To run it, remove the hashtag at the beginning, which is included so that this isn't reinstalled every time this page is recompiled.
+
+Now, we can build our directory list:
+
+```{r, echo=TRUE}
+library(tidyverse)
+library(pdftools)
+jan6thfiles <- paste("jan6th/",list.files(path="jan6th", pattern = "pdf$"),sep="")
+```
+
+With this list constructed, we are now ready to read all the .pdf files into R:
+
+```{r, echo=TRUE}
+jan6thtestimony  <- lapply(jan6thfiles, pdf_text)
+```
+
+This command will probably take a moment, as we are loading a substantial collection of text! If you run into an error with this command, the most likely reason is that you may have your working directory set in the wrong place. Point your working directory at the place you installed the Practice of Multimethod github repository on your computer, using the setwd() command in R, and try again.
+
+The jan6thtestimony object is a long list of text files, one for each of our documents of interest. For example, we can look at part of one exemplar, document number 35:
+
+```{r, echo=TRUE}
+jan6thtestimony[[35]][3:4]
+```
+
+The text is obviously somewhat messy, including various symbols as well as very common words that are unhelpful for statistical analysis. To clean up the text and begin to analyze it, we need to install and load two more R libraries. These are oriented toward text processing and statistical text modeling, which are methods that will help us summarize the very large amount of text that we just loaded!
+
+```{r, echo=FALSE}
+#install.packages("stm")
+#install.packages("tm")
+library(stm)
+library(tm)
+```
+
+Next, we want to convert all words to lower case, remove symbols and punctuation, get rid of unhelpfully common words (``stopwords''), and otherwise clean up the text for analysis. There are many options we can set for this process, but we will leave everything at the defaul settings for this example. We include a ``metadata'' object that is simply a list of ID numbers for each of the documents in the data so that we can save a copy of the original texts that drops out any documents deleted because of idiosyncratic contents. This will turn out to be important later on so that we can read specific texts from the perspective of the model.  
+
+```{r, echo=TRUE}
+processed_jan6th <- textProcessor(documents=jan6thtestimony, metadata=data.frame(docnumbers=1:length(jan6thtestimony)))
+prep_jan6th <- prepDocuments(processed_jan6th$documents, processed_jan6th$vocab, processed_jan6th$meta)
+jan6thtestimony.trimmed <- jan6thtestimony[c(prep_jan6th$meta$docnumbers)]
+```
+
+Our next step is to figure out how complicated of a topic model we should use to best summarize the data. Unfortunately, the way to do that is to fit a number of different topic models of different sizes and then compare their fit statistics. This is a slow process, and can sometimes fail if the estimation process randomly draws a matrix that can't mathatically work. If you get an error, just try again and it will probably just work the next time.
+
+There will be an enormous amount of output on your screen. Most of it isn't useful. For this step, all you want is the final plot showing the relative performance of different sizes of models, so you can ignore all of the rest.
+
+```{r, echo=TRUE}
+K <- 3:20
+jan6thkresult <- searchK(prep_jan6th$documents, prep_jan6th$vocab, K, data=prep_jan6th$meta)
+plot(jan6thkresult)
+```
+
+The plots show information that helps us choose the best model based on the number of topics. Essentially, we would like the number of topics to be as small as possible while maximizing the held-out likelihood, minimizing the residuals, maximizing the semantic coherence, and maximizing the lower bound. For our results, twelve topics seems about right.
+
+Once again, there will be a lot of output to your screen as the model is estimated. This output can be reassuring, as it shows that the computer has not frozen up, but it is not in itself very informative. Simply wait for the final results. The information we want comes from the labelTopics command.
+
+```{r, echo=TRUE}
+jan6th.stm <- stm(prep_jan6th$documents, prep_jan6th$vocab, 12, 
+               data=prep_jan6th$meta)
+
+labelTopics(jan6th.stm)
+```
+
+The overall pattern of results is complicated! Which topic would you look at for information about the role of street gangs like the Proud Boys (e.g., Enrique Tarrio) and the Oath Keepers (e.g., Steward Rhodes) in the events of January 6th? Which topic would you examine to find testimony about the false elector plot associated with Kenneth Chesebro? Which topic is most likely to contain information about Cassidy Hutchinson, the witness who, among other things, described Trump as being angry that his bodyguards didn't let him join the crowd in front of the Capitol on January 6th?
+
+For any topic that we have selected, we can choose the most representative documents from that topic for closer inspection using the command findThoughts. Here, you insert the topic number or numbers of interest of interest inside the parentheses following the c after the word topics. In the example below, I have looked at the single best example of a topic for the 12th topic in the model above.
+
+```{r, echo=TRUE}
+findThoughts(jan6th.stm, texts=jan6thtestimony.trimmed, topics=c(12), n=1)
+```
+
+Try modifying this code to find a document that fits within the three topics you identified in the previous paragraph as likely to contain information about street gangs, the false electors plot, or the testimony of Cassidy Hutchinson. Read through the texts, doing any research necessary to understand their context. How well do they fit your understanding of the category they came from? What did you learn from them, and what new questions do you have after reading them? 
 
 ## Discussion Questions
 
