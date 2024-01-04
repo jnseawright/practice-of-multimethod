@@ -48,6 +48,35 @@ The following command will load the processed data directly onto your computer f
 meetpressDTM <- read.csv("https://github.com/jnseawright/practice-of-multimethod/raw/main/meet-the-press/meetpressdtm.csv")
 ```
 
+We are also interested in looking at the extent to which the general public is paying attention to climate as a topic. (In deeper investigation, we would want to look at whether this is positive, negative, or polarized attention, but this is a good starting place.) To measure this, we have monthly data from Google Trends on the amount of U.S. search traffic related to the topic of climate:
+
+```{r, echo=TRUE}
+climategoogletrendsdata <- read.csv("https://github.com/jnseawright/practice-of-multimethod/raw/main/meet-the-press/climate.csv")
+```
+
+We can now patch the two together using dates to connect them. The inner join here combines together the rows that have matching months.
+
+```{r, echo=TRUE}
+#install.packages("parsedate")
+library(parsedate)
+climategoogletrendsdata$month <- parse_date(climategoogletrendsdata$month)
+meetpressDTM$month <- floor_date(parse_date(meetpressDTM$doc_id),unit="month")
+climatecombined.data <- inner_join(climategoogletrendsdata, meetpressDTM, by="month")
+```
+
+In the combined data, the ``month'' variable is first, followed by the Google Trends ``climate'' variable. After that come two ID variables for each specific show of Meet the Press. Over 48,000 other variables related to word use on Meet the Press follow. Hence, we can run a Lasso regression using the following code, which excludes the month and ID variables from the analysis and splits the outcome variable from the vocabulary:
+
+```{r, echo=TRUE}
+#install.packages("glmnet")
+library(glmnet)
+climatelasso <- glmnet(climatecombined.data[,5:ncol(climatecombined.data)], climatecombined.data$climate.x)
+climatecoefs <- coef(climatelasso, , s = 0.1)
+rownames(climatecoefs)[order(abs(climatecoefs), decreasing=TRUE)][2:21]
+```
+
+The code above runs the Lasso regression using the glmnet command, stores the gigantic list of resulting coefficents (most of which are zero) in the object climatecoefs, and then finds the twenty terms with the largest coefficents using the last command. Looking at those terms, can you form any hypotheses about social or political dynamics in elite messaging that could be driving US public opinion about climate change?
+
+How would you proceed to set up a process-tracing research design to explore those hypotheses? Spell out your plan as carefully as possible, pointing to possible data sources and modes of analysis.
 
 ## Discussion Questions
 
