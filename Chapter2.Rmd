@@ -40,7 +40,14 @@ How and especially why have American elites chosen specific messages about clima
 
 Of course, as we know, good process tracing requires the best available understanding of the subject matter in order to provide us with the most comprehensive possible set of alternative explanations. Many of us are not subject-matter experts on the politics of climate change! How can we efficiently move in the direction of this kind of understanding?
 
-Following the research design proposed in the book, we need a collection of texts in which American political elites speak (about climate change and, perhaps, other topics), as well as data about the extent to which Americans are thinking about climate.
+Following the research design proposed in the book, we need a collection of texts in which American political elites speak (about climate change and, perhaps, other topics), as well as data about the extent to which Americans are thinking about climate. We can get a useful collection of elite speech from examining transcripts of Meet the Press, downloaded from [NBC's website](https://www.nbcnews.com/meet-the-press/meet-press-transcripts-n51976). These transcripts are, of course, under copyright, so we can't provide the raw data. We can, however, provide processed data showing word usage by date.
+
+The following command will load the processed data directly onto your computer from github:
+
+```{r, echo=TRUE}
+meetpressDTM <- read.csv("https://github.com/jnseawright/practice-of-multimethod/raw/main/meet-the-press/meetpressdtm.csv")
+```
+
 
 ## Discussion Questions
 
