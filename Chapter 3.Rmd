@@ -71,14 +71,14 @@ jan6thtestimony[[35]][3:4]
 
 The text is obviously somewhat messy, including various symbols as well as very common words that are unhelpful for statistical analysis. To clean up the text and begin to analyze it, we need to install and load two more R libraries. These are oriented toward text processing and statistical text modeling, which are methods that will help us summarize the very large amount of text that we just loaded!
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 #install.packages("stm")
 #install.packages("tm")
 library(stm)
 library(tm)
 ```
 
-Next, we want to convert all words to lower case, remove symbols and punctuation, get rid of unhelpfully common words (``stopwords''), and otherwise clean up the text for analysis. There are many options we can set for this process, but we will leave everything at the defaul settings for this example. We include a ``metadata'' object that is simply a list of ID numbers for each of the documents in the data so that we can save a copy of the original texts that drops out any documents deleted because of idiosyncratic contents. This will turn out to be important later on so that we can read specific texts from the perspective of the model.  
+Next, we want to convert all words to lower case, remove symbols and punctuation, get rid of unhelpfully common words (i.e., stopwords), and otherwise clean up the text for analysis. There are many options we can set for this process, but we will leave everything at the defaul settings for this example. We include a ``metadata'' object that is simply a list of ID numbers for each of the documents in the data so that we can save a copy of the original texts that drops out any documents deleted because of idiosyncratic contents. This will turn out to be important later on so that we can read specific texts from the perspective of the model.  
 
 ```{r, echo=TRUE}
 processed_jan6th <- textProcessor(documents=jan6thtestimony, metadata=data.frame(docnumbers=1:length(jan6thtestimony)))

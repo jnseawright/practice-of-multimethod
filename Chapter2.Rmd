@@ -58,7 +58,11 @@ We can now patch the two together using dates to connect them. The inner join he
 
 ```{r, echo=TRUE}
 #install.packages("parsedate")
+#install.packages("tidyverse")
+#install.packages("lubridate")
 library(parsedate)
+library(tidyverse)
+library(lubridate)
 climategoogletrendsdata$month <- parse_date(climategoogletrendsdata$month)
 meetpressDTM$month <- floor_date(parse_date(meetpressDTM$doc_id),unit="month")
 climatecombined.data <- inner_join(climategoogletrendsdata, meetpressDTM, by="month")
@@ -70,7 +74,7 @@ In the combined data, the ``month'' variable is first, followed by the Google Tr
 #install.packages("glmnet")
 library(glmnet)
 climatelasso <- glmnet(climatecombined.data[,5:ncol(climatecombined.data)], climatecombined.data$climate.x)
-climatecoefs <- coef(climatelasso, , s = 0.1)
+climatecoefs <- coef(climatelasso, s = 0.1)
 rownames(climatecoefs)[order(abs(climatecoefs), decreasing=TRUE)][2:21]
 ```
 
