@@ -1723,15 +1723,19 @@ U.S. search traffic related to the topic of climate:</p>
 inner join here combines together the rows that have matching
 months.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co">#install.packages(&quot;parsedate&quot;)</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">library</span>(parsedate)</span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#install.packages(&quot;tidyverse&quot;)</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#install.packages(&quot;lubridate&quot;)</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">library</span>(parsedate)</span></code></pre></div>
 <pre><code>## 
 ## Attaching package: &#39;parsedate&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:readr&#39;:
 ## 
 ##     parse_date</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>climategoogletrendsdata<span class="sc">$</span>month <span class="ot">&lt;-</span> <span class="fu">parse_date</span>(climategoogletrendsdata<span class="sc">$</span>month)</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>meetpressDTM<span class="sc">$</span>month <span class="ot">&lt;-</span> <span class="fu">floor_date</span>(<span class="fu">parse_date</span>(meetpressDTM<span class="sc">$</span>doc_id),<span class="at">unit=</span><span class="st">&quot;month&quot;</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>climatecombined.data <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(climategoogletrendsdata, meetpressDTM, <span class="at">by=</span><span class="st">&quot;month&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>climategoogletrendsdata<span class="sc">$</span>month <span class="ot">&lt;-</span> <span class="fu">parse_date</span>(climategoogletrendsdata<span class="sc">$</span>month)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>meetpressDTM<span class="sc">$</span>month <span class="ot">&lt;-</span> <span class="fu">floor_date</span>(<span class="fu">parse_date</span>(meetpressDTM<span class="sc">$</span>doc_id),<span class="at">unit=</span><span class="st">&quot;month&quot;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>climatecombined.data <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(climategoogletrendsdata, meetpressDTM, <span class="at">by=</span><span class="st">&quot;month&quot;</span>)</span></code></pre></div>
 <p>In the combined data, the
 <code>month&#39;&#39; variable is first, followed by the Google Trends</code>climate’’
 variable. After that come two ID variables for each specific show of
@@ -1749,7 +1753,7 @@ analysis and splits the outcome variable from the vocabulary:</p>
 ##     expand, pack, unpack</code></pre>
 <pre><code>## Loaded glmnet 4.1-8</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>climatelasso <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(climatecombined.data[,<span class="dv">5</span><span class="sc">:</span><span class="fu">ncol</span>(climatecombined.data)], climatecombined.data<span class="sc">$</span>climate.x)</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>climatecoefs <span class="ot">&lt;-</span> <span class="fu">coef</span>(climatelasso, , <span class="at">s =</span> <span class="fl">0.1</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>climatecoefs <span class="ot">&lt;-</span> <span class="fu">coef</span>(climatelasso, <span class="at">s =</span> <span class="fl">0.1</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">rownames</span>(climatecoefs)[<span class="fu">order</span>(<span class="fu">abs</span>(climatecoefs), <span class="at">decreasing=</span><span class="cn">TRUE</span>)][<span class="dv">2</span><span class="sc">:</span><span class="dv">21</span>]</span></code></pre></div>
 <p>The code above runs the Lasso regression using the glmnet command,
 stores the gigantic list of resulting coefficents (most of which are
