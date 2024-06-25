@@ -8,3 +8,5 @@ Supporting materials, exercises, code, and data for the book, the Practice of Mu
 [Chapter 3](https://jnseawright.github.io/practice-of-multimethod/Chapter-3.html)
 
 [Chapter 4](https://jnseawright.github.io/practice-of-multimethod/Chapter-4.html)
+
+[Chapter 6](https://jnseawright.github.io/practice-of-multimethod/Chapter-6.html)

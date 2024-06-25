@@ -19,75 +19,159 @@ library(openintro)
 
 ## How do scholars use the idea of backsliding?
 
-There has been a great deal of scholarly and popular discussion and debate regarding the idea of democratic backsliding in recent years. Many are concerned that democracy is in retreat around the world, 
+There has been a great deal of scholarly and popular discussion and debate regarding the idea of democratic backsliding in recent years. Many are concerned that democracy is in retreat around the world, while others claim that these concerns are overblown and reflect subjective definitions that have no clear empirically observable implications. This debate is obviously interesting as a descriptive matter about the state of the scholarly literature, and it has important implications about how worried we should be about trends vis-a-vis worldwide democracy. 
 
-What causes inequality around the world? This question has received a great deal of research attention from social scientists of all kinds, and we will not solve it in these exercises. Nevertheless, an overly simplistic approach to the question can be useful as a stylized example. Consider the inequality dataset, available on the github site:
+All of this starts with a conceptual question: are scholars in fact using ``backsliding'' in conjunction with clear, concrete institutional and other empirical considerations in mind, or do they instead tend to refer to broad considerations and then jump to cases as if there were an obvious consensus about which countries are engaging in backsliding --- but without engaging in a full social-scientific measurement process?
 
-```{r, echo=TRUE}
-inequality <- read.csv("https://github.com/jnseawright/practice-of-multimethod/raw/main/data/inequality.csv")
-```
-
-We can start by briefly examining the contents of the dataset:
+We can test this by carrying out a text-as-data analysis of the way that scholars have in fact used the word backsliding in published research. We collected the 100 first results on Google Scholar for a search for ``backsliding,'' and extracted a window of text including 100 words before and after each usage of the term. These snippets of text are available on the github site, together with references to the articles from which they originate:
 
 ```{r, echo=TRUE}
-summary(inequality)
+backsliding_texts <- read.csv("https://github.com/jnseawright/practice-of-multimethod/raw/main/backsliding/backslidingtexts.csv")
 ```
 
-Let's check whether democracy is connected with lower levels of economic equality, compared with dictatorships. We can do this by carrying out a bivariate regression, using the Gini coefficient (a measure of inequality) as the dependent variable and the Polity variable (a measure of democracy) as the independent
-variable. Recall that Gini coefficients increase as inequality gets worse, and also that the Polity measure increases as democracy goes up.
+We can use this collection of texts to analyze how scholars are collectively using the concept of backsliding. If scholars are working with well-developed, empirically grounded concepts, then we should expect to see references to specific social and institutional features show up as frequently used terms in a text-as-data model. 
+
+However, if there is merit in the critique that debates about backsliding are somewhat vague and unempirical, we may expect the topic models to be short in specific social and institutional features. Instead, we might anticipate a predominance of general language about measurement and democracy, a list of authors, and names of specific countries.
+
+To begin with, we have to prepare the texts for analysis:
 
 ```{r, echo=TRUE}
-#install.packages(jtools)
-library(jtools)
-inequalitylm.1 <- lm(Gini ~ Polity, data=inequality)
-summ(inequalitylm.1)
+library(stm)
+library(tm)
+
+processed_backsliding <- textProcessor(documents=backsliding_texts$full.backsliding.text, 
+                                     metadata=backsliding_texts)
+
+prep_backsliding <- prepDocuments(processed_backsliding$documents, processed_backsliding$vocab, processed_backsliding$meta)
 ```
 
-What do we see here? Describe and explain the results, as well as any assumptions needed in order for them to be meaningful.
-
-One might like to incorporate control variables, obviously. The most commonly used control variable in regressions of this kind is logged GDP. We can include that in a simple multivariate regression:
+Then, we need to determine an appropriate number of topics to include in the model:
 
 ```{r, echo=TRUE}
-inequalitylm.2 <- lm(Gini ~ Polity + I(log(GDP)), data=inequality)
-summ(inequalitylm.2)
+testmodelsize<-searchK(prep_backsliding$documents, prep_backsliding$vocab, K = c(5,7,9,11,13,15), 
+                       prevalence=~ citationcount+year, data=prep_backsliding$meta, verbose=FALSE)
+
+plot(testmodelsize)
 ```
 
-What does this regression show us? What assumptions do we need in order for these results to be taken seriously? What, in fact, should we do next?
+Looking at the plotted results, how many topics are you going to include in the model? Why?
 
-## Integrative case-study followup
+For the example code below, we will use seven topics. This is not necessarily the right answer, and you can substitute your choice; however, the code will not execute if we do not choose some number of topics to model. Note also that we are conditioning on the year and the citation count of each article in the model.
+
+```{r, echo=TRUE}
+number.topics <- 7
+backsliding.stm <- stm(prep_backsliding$documents, prep_backsliding$vocab, number.topics, 
+                     prevalence=~citationcount+year, data=prep_backsliding$meta)
+
+labelTopics(backsliding.stm, n=12)
+```
+
+After possibly adjusting the code to include the number of topics you decided on, please interpret the results. Do they fit with the point of view in which the backsliding literature involves one or more well-defined, empirically grounded concepts, or are they more reflective of what we would expect if scholars working on backsliding are using the term in a loose, colloquial way that may have little social-scientific empirical content? Explain which features of the results support your answer.
+
+## Integrative followup
 	
-Devise a research plan for case-study analysis that could test key causal inference assumptions for this regression, using resources available to you online. The two cases you should focus on are the Republic of Yemen and Zimbabwe. Describe the research you have designed to test each assumption of interest, carry out your plan, and discuss any modifications to the regression analysis that your research implies.
+Regardless of our conclusions about the overarching question driving the text-as-data analysis above, the results do suggest the existence of some number of different topics in the backsliding literature. Can you make sense of them? Reading through the highest probability and FREX words for each topic, offer a hypothesis about what each topic means.
 
-Be sure to look carefully at the historical causes of the cause (levels of democracy) in each country, searching for possible confounding variables as well as sources of measurement error. You may also wish to look for evidence about the causal pathway between democracy and inequality, as a way of finding such problems. Your work may lead you to discover other sorts of issues, as well; be creative in exploring the cases!
+Then, select the original documents that best exemplify each topic and check if they fit with your hypothesis after a close reading. You can select the documents using the findThoughts() command:
 
-## Case-selection Detective Work
+```{r, echo=TRUE}
+topictext <- findThoughts(backsliding.stm)$index$`Topic 1`[1]
+paste0(c(backsliding_texts$journal[topictext], backsliding_texts$author1name[topictext], backsliding_texts$year[topictext]), collapse=" ")
+```
 
-Using the data, determine which case-selection rule was used to select these cases. Conduct one similar case study using surprising causes case selection. How do the insights generated by this case study compare with those produced by yesterday's case studies?
+The result is a citation we can copy directly into Google Scholar to find the original scholarly article in question. (For some very prolific scholars, there may be more than one article that fits the prompt. In these cases, the one with the highest citation count is usually the right choice.) You can change to other topics by switching the number right after the word Topic in the code:
 
-## Improving the Regression Using Qualitative Insights
+```{r, echo=TRUE}
+topictext <- findThoughts(backsliding.stm)$index$`Topic 2`[1]
+paste0(c(backsliding_texts$journal[topictext], backsliding_texts$author1name[topictext], backsliding_texts$year[topictext]), collapse=" ")
+```
 
-On the basis of the case studies you have carried out, using the variables in the inequality data set and any others that you can add, create a refined regression analysis that does a better job of meeting key assumptions. Using your refined regression, carry out case selection using the deviant, extreme, typical, and any other rules of interest. Do you end up selecting the same cases as with the simpler regression model, or different cases? Choose one case and conduct a case study focused on it. Can you find further issues that could still be improved in the analysis?
+Try reading through the articles that best exemplify at least some of the topics (or all of them, if you're feeling extravagant!). Do they use the concept in ways that fit the meanings that you had hypothesized for each topic, or do they call your assigned meanings into question? 
 
-## Multi-method Interview
+## Sorting changes in the level of democracy
 
-Access Lewis-Beck and Ratto's 2013 *Electoral Studies* article, ``Economic voting in Latin America: A general model.'' Which assumptions in this analysis could potentially be tested using in-depth interviews of voters? Carefully design an in-depth interview schedule to test as many assumptions of the model as possible. For each part of the interview, explain what multi-method task it is intended to fulfill and clarify the qualitative causal inferential strategy connected with it.
+What, in fact, does the worldwide landscape look like in terms of democratic trajectories over the ten years from 2010 through 2020? Can we clearly separate ``backsliding'' countries from those that are stably democratic, stably authoritarian, etc.? Are there different kinds of backsliding trajectories that we can sort out?
 
-Now, find someone in the class and administer your interview. Take careful notes, analyze your results, and describe any issues for the model that arise from your interview. What next steps would you take if you wanted to pursue this line of research further?
+Let us consider the intermediate indices in the Varieties of Democracy data (not the highest level of aggregation into full-scale democracy scores or even the aggregation into conceptual components, but on the other hand not the lowest level of aggregation in which there are hundreds of different indicators). We will analyze change in these indices from the year 2010 to the year 2020. Let us begin by loading the v-dem data:
 
-## Control Variables in a Literature
-	
-This problem works well as a group activity. 
-	
-Find three to five quantitative articles on the same outcome (for example, three articles on the causes of civil wars). Make a master list of all the control variables used in those articles, as well as which articles use each variable. For each variable, determine whether it might be a good control variable that helps eliminate confounding --- but also whether it might be a bad control variable that is either an instrument or post-treatment. How close do your articles come to including the good control variables and excluding the bad ones?
+```{r, echo=TRUE}
+install.packages("devtools")
+devtools::install_github("vdeminstitute/vdemdata")
+library(vdemdata)
 
-How much do the articles across a particular subject area agree about the control variables that should be used, and how much do they disagree? When they disagree, is it because they are exploring different causes, or is it for some other reason?
+vdem.intermed <- vdem %>% select(country_name, year, v2x_freexp_altinf, v2x_frassoc_thick, v2x_suffr, v2xel_frefair, v2x_elecoff, v2xcl_rol, v2x_jucon, v2xlg_legcon, v2x_cspart, v2xdd_dd, v2xel_locelec, v2xel_regelec, v2xeg_eqprotec, v2xeg_eqaccess, v2xeg_eqdr)
 
-## Case Selection in a Literature
+vdem2010 <- vdem.intermed %>% filter(year == 2010)
+vdem2020 <- vdem.intermed %>% filter(year == 2020)
 
-For a research topic that interests you, find five published case studies or multi-method studies with a significant case-study component. How, if at all, is case selection described in these studies? What advantages and disadvantages do you see in the case selection processes used? Describe how you would select cases if you were to repeat these studies, and explain why.
+#South Sudan is a new country in the dataset and as such cannot have a change from 2010 to 2020.
+
+vdem2020 <- vdem2020 %>% filter(country_name != "South Sudan")
+
+#Copy in the country name variable.
+vdemchange <- vdem2020
+#Now carry out subtraction for all the numeric change variables.
+vdemchange[,2:17] <- vdem2020[,2:17] - vdem2010[,2:17]
+#Remove all NA values.
+vdemchange <- na.omit(vdemchange)
+```
+
+We are now ready to move toward data analysis. Our goal is a cluster analysis that will let us see whether we can meaningfully sort countries' regime trajectories on the basis of these scores --- and whether the trajectories are moving in terms of institutional variables or only more allegedly subjective variables about inclusion and equality.
+
+Our first step is to select the appropriate number of clusters to adequately model the data. 
+
+```{r, echo=TRUE}
+# Set a maximum number of clusters to consider
+max_clusters <- 20
+
+# Initialize vector to store results: wss, which measures the explanatory work done by the cluster analysis for each model
+wss <- numeric(max_clusters)
+
+# Look over 1 to max_clusters possible clusters
+for (i in 1:max_clusters) {
+  
+  # Fit the model for each step through the search: km.result
+  km.result <- kmeans(vdemchange[,3:17], centers = i)
+  
+  # Save the within sum of squares
+  wss[i] <- km.result$tot.withinss
+}
+
+# Produce a plot
+wss_df <- tibble(clusters = 1:max_clusters, wss = wss)
+ 
+scree_plot <- ggplot(wss_df, aes(x = clusters, y = wss, group = 1)) +
+    geom_point(size = 4)+
+    geom_line() +
+    scale_x_continuous(breaks = c(2, 4, 6, 8, 10)) +
+    xlab('Number of clusters')
+scree_plot
+```
+
+In looking at this plot, what we want is the number of clusters such that the rate of decline *after* that number is much shallower than the rate *before* that number. Where would you put that cutpoint? There are arguably multiple different reasonable choices. Select one and use it going forward. To make the code run at all, we will need to use some number of clusters; the code will be set to select three, but you may choose a different number.
+
+```{r, echo=TRUE}
+backsliding.cluster <- kmeans(vdemchange[,3:17], centers = 3)
+backsliding.cluster
+```
+
+Look carefully across the results, consulting the [v-dem codebook](https://www.v-dem.net/static/website/img/refs/codebookv12.pdf) as necessary to interpret variable names, and form an interpretation of what the clusters mean. Which variables are doing work in each cluster, and how does this speak to the debate about whether there is empirical content in discussions of backsliding?
+
+To qualitatively deepen the hypothesis you have formed about the way variables are working to separate cases into groups based on regime trajectories, let's select the cases that best represent each cluster in the data. The following code will give the name of the single country closest to the center of each cluster, in the same order as the model:
+
+```{r, echo=TRUE}
+library(FNN)
+vdemchange$country_name[get.knnx(vdemchange[,3:17], backsliding.cluster$centers, 1)$nn.index]
+```
+
+Using your background knowledge and any research materials available to you, make sense of whether these countries' regime trajectories between 2010 and 2020 fit with your understanding of the meaning of the clusters that the model identified. Do these empirical results suggest some ways that the literature on backsliding could make its conceptual usage more specific?
+
+## Integrative Measurement
+
+Select a country with which you are comparatively familiar. Determine how the v-dem data have coded that country's political trajectory between 2010 and 2020, including digging into the more fine-grained measures in the full data set as necessary. How well do those scores correspond with your knowledge of that country's political history? Is the coding a close fit, or are there discrepancies? If there are discrepancies, can you find enough information to form a theory about the reasons why?
 
 ## Discussion Questions
 
-Find an example of research using regression in a way that you regard as successful from your area of research. What makes this application of regression successful? What is regression used for, what assumptions are needed, and to what extent do you regard the results as credible?
+The literature on democracy has been a central focus of discussions of conceptualization and measurement across multiple disciplines for several decades, a pattern that continues to the present. What makes this topic so inescapable when it comes to discussions in this methodological area? Are there things that we miss because of the focus on democracy and regime politics, or alternatively that we overemphasize because of this focus?
 
-What difference does it make for the qualitative part of multi-method causal inference when the cases under study are historical vs. contemporary? What about when they are individuals vs. organizations vs. countries?
+In research focused on causal inference, we often emphasize a contrast between work that tests a strong (possibly preregistered) prior hypothesis with a well-developed research design and more exploratory work that instead pokes at data in a looser way with a goal of developing new ideas. With work focused on conceptualization and measurement, is this kind of explanatory/exploratory distinction relevant? Are we unusually free to cycle among qualitative research, quantitative data, and theory here, or are there still risks of false discovery to worry about?
