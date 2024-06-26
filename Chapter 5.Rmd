@@ -1,0 +1,51 @@
+---
+title: "Chapter 5 Exercises and Supporting Materials"
+author: "J. Seawright"
+date: "2024-06-25"
+output:
+  html_document:
+    css: lab.css
+    highlight: pygments
+    theme: sandstone
+    toc: true
+    toc_float: true
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(eval = TRUE, results = FALSE)
+library(tidyverse)
+library(openintro)
+```
+
+## How often do test the assumptions in their experiments?
+
+Experiments have long been common in some areas of the social sciences (especially psychology and labor economics), and have more recently become mainstream, widely used research designs across a much broader range of fields. As these designs have spread, how common are multi-method components --- especially but not exclusively in the pre-test phase? 
+
+One possibility is that experimental researchers are already frequently using these research designs every day, and that evidence of this can easily be found across the literature. Another possibility is that small, informal qualitative exploration happens before experiments are put into the field, but that this phase is not carefully designed, not formally analyzed, and not systematically reported. A third possibility (difficult to distinguish in practice from the second) is that applied researchers are not in fact using qualitative methods, or perhaps anything else, to test several key assumptions in their experiments and are simply moving forward with the best designs they can imagine.
+
+Let's explore the evidence for these possibilities. Choose a research topic that interests you for which you expect there to be a meaningful experimental literature. Collect at least several published experiments (five or more would be great!), and after examining the articles, determine what if anything the research designs include that test:
+
+* What the treatment means in practice to participants in the experiment
+* Whether the outcome was measured in appropriate ways that function equivalently across treatment groups
+* Whether the intended causal pathway from the treatment to the outcome is exhaustive
+* Whether there are network effects and spillover among cases (especially if it is a field experiment)
+
+For each study, determine whether it (best case) reported research design steps for all (or at least many) of these assumptions, analyzed evidence in the publication supporting the design decisions actually made, and provide access to in-depth discussion or archival materials elsewhere; (intermediately) at least describes the research design steps taken to test the assumptions, even if there is little discussion of the evidence involved; or (worst case) does not disclose any research design steps taken to test these assumptions.
+
+Looking at what you've found, what do you conclude about the current status quo of experimental research design practice in this area?
+
+## Integrative retroactive design
+	
+What follows assumes that not all of your experiments from the previous question were in the best-case category. Select one of the experiments from the previous question that was in the weakest category you observed in terms of its testing of assumptions. Design a qualitative pre-test component that could have been used to test the assumptions for that experiment.
+
+Plan either a series of one-on-one interviews or a focus group design. Include questions and/or activities that address each relevant assumption from the previous question to the extent possible. Make your plan as detailed as you can. Write out planned questions, including possible follow-ups, in advance, and think about what answers might tell you about the assumptions.
+
+## Integrative experimental retroactive pre-test
+
+If you are in a classroom setting or otherwise have access to helpful volunteers, carry out your planned qualitative pre-test from the previous question. What does this research activity teach you about the design decisions made in the experiment you are reconsidering? Are those decisions supported, or are there some that you might have made differently given the research you have conducted? Explain the specific evidence that justifies your answer.
+
+## Discussion Questions
+
+In what ways is it more challenging to design multi-method work around regression and similar observational quantitative methods, and in what ways is it more challenging to design multi-method work around experiments?
+
+In principle, one could describe research combining experiments and regression as a multi-method design. Does that make sense? Would it require the same kinds of design principles as combining qualitative methods with experiments, or would different design priorities take center stage?
