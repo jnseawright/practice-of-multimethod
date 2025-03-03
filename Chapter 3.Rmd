@@ -1,7 +1,7 @@
 ---
 title: "Chapter 3 Exercises and Supporting Materials"
 author: "J. Seawright"
-date: "2024-01-02"
+date: "2025-02-27"
 output:
   html_document:
     css: lab.css
@@ -17,108 +17,75 @@ library(tidyverse)
 library(openintro)
 ```
 
-## Analyze and enhance a case study
+## Process tracing
 
-A key component of designing good multi-method research based on case studies is carefully analyzing how existing case studies are actually doing their work. We cannot build productively on foundations we don't understand!
+Qualitative researchers have done exceptional work assembling exercises and examples to help scholars work through ideas connected with process tracing. The [exercises assembled by David Collier](http://polisci.berkeley.edu/sites/default/files/people/u3827/Teaching%20Process%20Tracing.pdf) are an outstanding exemplar. As a check on understanding, a skill-building exercise, or even for the sheer pleasure of the intellectual exercise, we recommend working through at least several of them.
 
-Choose a published qualitative/case study analysis on a topic that interests you, and identify the elements of that case study that contribute to causal inference. After specifying the central causal hypothesis or hypotheses, please determine which components, if any, of the research design play each of the following roles.
 
-* Help identify counterfactuals
+## Focus group for process tracing
 
-* Carry out process-tracing tests
+Join a group of about 4 other students. Come up with (a) a causal question, (b) a main hypothesis for which students in this class are a part of the relevant population and a focus group could be a source of potentially useful causal process observations, and (c) a set of plausible alternative hypotheses. Think about possible implications of each hypothesis and devise questions and activities for your focus group to test at least some of those implications.
 
-* Refine measurement
+Plan a focus group (if this is a new method for you, [Jennifer Cyr's book](https://www.cambridge.org/core/books/focus-groups-for-the-social-science-researcher/F84DFB3576AD203DB1B495F97E10BB9D) is an exceptional resource), preparing a list of questions, topics, or tasks that have a good chance of producing relevant causal-process observations. List these out explicitly, and explain your reasoning. Pair up with another group and carry out your focus group plan. Return the favor by also serving as a focus group for them.
 
-* Analyze causal flows
+Now, with your group, carry out process tracing. Did the focus group produce evidence that fits your theory but is hard to explain given other theories, or not? Alternatively, did you discover ideas for new theories that you did not initially expect?
 
-* Discover new variables
+How could a survey be most helpful in expanding on what you have learned?
 
-After analyzing these elements, identify the one part of the case study that you think is the least developed. Propose a quantitative or machine-learning design that could enhance this element. Be as specific as possible. Identify particular data sources, research strategies, and statistical approaches if possible. What would we learn from the quantitative work that would enhance the existing case study?
+## Process-tracing elite messaging on climate change
 
-## Summarizing the January 6th Committee Testimony
+Public opinion research suggests that American public opinion on climate change follows many of the same patterns as the other, polarized, party-encrusted divides that have prevented policy movement on issues such as inequality, gun violence, immigration, public health, and many other areas of concern to Americans and the rest of the world. 
 
-While investigating the invasion of the U.S. Capitol by supporters of defeated presidential candidate Donald Trump on January 6th, 2020, a committee of congresspeople received 274 publicly disclosed documents of primary-source testimony related to the event. Text transcripts are available from [the government](https://www.govinfo.gov/collection/january-6th-committee-final-report?path=/gpo/January%206th%20Committee%20Final%20Report%20and%20Supporting%20Materials%20Collection/Supporting%20Materials%20-%20Transcribed%20Interviews%20and%20Depositions/%7B%22pageSize%22%3A%22200%22%2C%22offset%22%3A%221%22%7D) and have also been downloaded into a .pdf collection on this book's [github repository](https://github.com/jnseawright/practice-of-multimethod/tree/main/jan6th).
+How and especially why have American elites chosen specific messages about climate change over time? Surely we can all come up with our own ideas and hypotheses, and there is value to this exercise! So start by listing your own preferred hypothesis about how American political elites talk about climate change, and why.
 
-It is possible to read through all of these documents given sufficient time, and to carefully take notes on their contents! Such is the nature of qualitative research. However, it is often useful to have a synthetic, summary picture of their contents and of the relative position of each document within that overall structure. Our first step is to read the files into R. We want to start by building a list inside R of all the files that we need to read into our computer. If you have never read a .pdf file into R before, you should start by running the following command to teach your installation of R how to interact with  files:
+Of course, as we know, good process tracing requires the best available understanding of the subject matter in order to provide us with the most comprehensive possible set of alternative explanations. Many of us are not subject-matter experts on the politics of climate change! How can we efficiently move in the direction of this kind of understanding?
+
+Following the research design proposed in the book, we need a collection of texts in which American political elites speak (about climate change and, perhaps, other topics), as well as data about the extent to which Americans are thinking about climate. We can get a useful collection of elite speech from examining transcripts of Meet the Press, downloaded from [NBC's website](https://www.nbcnews.com/meet-the-press/meet-press-transcripts-n51976). These transcripts are, of course, under copyright, so we can't provide the raw data. We can, however, provide processed data showing word usage by date.
+
+The following command will load the processed data directly onto your computer from github:
 
 ```{r, echo=TRUE}
-#install.packages("pdftools")
+meetpressDTM <- read.csv("https://raw.githubusercontent.com/jnseawright/practice-of-multimethod/refs/heads/main/meet-the-press/meetpressdtm.csv")
 ```
 
-To run it, remove the hashtag at the beginning, which is included so that this isn't reinstalled every time this page is recompiled.
-
-Now, we can build our directory list:
+We are also interested in looking at the extent to which the general public is paying attention to climate as a topic. (In deeper investigation, we would want to look at whether this is positive, negative, or polarized attention, but this is a good starting place.) To measure this, we have monthly data from Google Trends on the amount of U.S. search traffic related to the topic of climate:
 
 ```{r, echo=TRUE}
+climategoogletrendsdata <- read.csv("https://raw.githubusercontent.com/jnseawright/practice-of-multimethod/refs/heads/main/meet-the-press/climate.csv")
+```
+
+We can now patch the two together using dates to connect them. The inner join here combines together the rows that have matching months.
+
+```{r, echo=TRUE}
+#install.packages("parsedate")
+#install.packages("tidyverse")
+#install.packages("lubridate")
+library(parsedate)
 library(tidyverse)
-library(pdftools)
-jan6thfiles <- paste("jan6th/",list.files(path="jan6th", pattern = "pdf$"),sep="")
+library(lubridate)
+climategoogletrendsdata$month <- parse_date(climategoogletrendsdata$month)
+meetpressDTM$month <- floor_date(parse_date(meetpressDTM$doc_id),unit="month")
+climatecombined.data <- inner_join(climategoogletrendsdata, meetpressDTM, by="month")
 ```
 
-With this list constructed, we are now ready to read all the .pdf files into R:
+In the combined data, the ``month'' variable is first, followed by the Google Trends ``climate'' variable. After that come two ID variables for each specific show of Meet the Press. Over 48,000 other variables related to word use on Meet the Press follow. Hence, we can run a Lasso regression using the following code, which excludes the month and ID variables from the analysis and splits the outcome variable from the vocabulary:
 
 ```{r, echo=TRUE}
-jan6thtestimony  <- lapply(jan6thfiles, pdf_text)
+#install.packages("glmnet")
+library(glmnet)
+climatelasso <- glmnet(climatecombined.data[,5:ncol(climatecombined.data)], climatecombined.data$climate.x)
+climatecoefs <- coef(climatelasso, s = 0.1)
+rownames(climatecoefs)[order(abs(climatecoefs), decreasing=TRUE)][2:21]
 ```
 
-This command will probably take a moment, as we are loading a substantial collection of text! If you run into an error with this command, the most likely reason is that you may have your working directory set in the wrong place. Point your working directory at the place you installed the Practice of Multimethod github repository on your computer, using the setwd() command in R, and try again.
+The code above runs the Lasso regression using the glmnet command, stores the gigantic list of resulting coefficents (most of which are zero) in the object climatecoefs, and then finds the twenty terms with the largest coefficents using the last command. Looking at those terms, can you form any hypotheses about social or political dynamics in elite messaging that could be driving US public opinion about climate change?
 
-The jan6thtestimony object is a long list of text files, one for each of our documents of interest. For example, we can look at part of one exemplar, document number 35:
+NOTE: some computers may run into difficulty with the above code, depending on the available memory and other configuration details. If that is the case for your computer, try running the lasso on only some columns of the matrix of words in the command above. Instead of [,5:ncol(climatecombined.data)], try choosing a smaller number for the upper limit. This will arbitrarily leave some words out of the analysis, so it is suboptimal, but it should reduce memory demands and processing time if these become a constraint.
 
-```{r, echo=TRUE}
-jan6thtestimony[[35]][3:4]
-```
-
-The text is obviously somewhat messy, including various symbols as well as very common words that are unhelpful for statistical analysis. To clean up the text and begin to analyze it, we need to install and load two more R libraries. These are oriented toward text processing and statistical text modeling, which are methods that will help us summarize the very large amount of text that we just loaded!
-
-```{r, echo=TRUE}
-#install.packages("stm")
-#install.packages("tm")
-library(stm)
-library(tm)
-```
-
-Next, we want to convert all words to lower case, remove symbols and punctuation, get rid of unhelpfully common words (i.e., stopwords), and otherwise clean up the text for analysis. There are many options we can set for this process, but we will leave everything at the defaul settings for this example. We include a ``metadata'' object that is simply a list of ID numbers for each of the documents in the data so that we can save a copy of the original texts that drops out any documents deleted because of idiosyncratic contents. This will turn out to be important later on so that we can read specific texts from the perspective of the model.  
-
-```{r, echo=TRUE}
-processed_jan6th <- textProcessor(documents=jan6thtestimony, metadata=data.frame(docnumbers=1:length(jan6thtestimony)))
-prep_jan6th <- prepDocuments(processed_jan6th$documents, processed_jan6th$vocab, processed_jan6th$meta)
-jan6thtestimony.trimmed <- jan6thtestimony[c(prep_jan6th$meta$docnumbers)]
-```
-
-Our next step is to figure out how complicated of a topic model we should use to best summarize the data. Unfortunately, the way to do that is to fit a number of different topic models of different sizes and then compare their fit statistics. This is a slow process, and can sometimes fail if the estimation process randomly draws a matrix that can't mathatically work. If you get an error, just try again and it will probably just work the next time.
-
-There will be an enormous amount of output on your screen. Most of it isn't useful. For this step, all you want is the final plot showing the relative performance of different sizes of models, so you can ignore all of the rest.
-
-```{r, echo=TRUE}
-K <- 3:20
-jan6thkresult <- searchK(prep_jan6th$documents, prep_jan6th$vocab, K, data=prep_jan6th$meta)
-plot(jan6thkresult)
-```
-
-The plots show information that helps us choose the best model based on the number of topics. Essentially, we would like the number of topics to be as small as possible while maximizing the held-out likelihood, minimizing the residuals, maximizing the semantic coherence, and maximizing the lower bound. For our results, twelve topics seems about right.
-
-Once again, there will be a lot of output to your screen as the model is estimated. This output can be reassuring, as it shows that the computer has not frozen up, but it is not in itself very informative. Simply wait for the final results. The information we want comes from the labelTopics command.
-
-```{r, echo=TRUE}
-jan6th.stm <- stm(prep_jan6th$documents, prep_jan6th$vocab, 12, 
-               data=prep_jan6th$meta)
-
-labelTopics(jan6th.stm)
-```
-
-The overall pattern of results is complicated! Which topic would you look at for information about the role of street gangs like the Proud Boys (e.g., Enrique Tarrio) and the Oath Keepers (e.g., Steward Rhodes) in the events of January 6th? Which topic would you examine to find testimony about the false elector plot associated with Kenneth Chesebro? Which topic is most likely to contain information about Cassidy Hutchinson, the witness who, among other things, described Trump as being angry that his bodyguards didn't let him join the crowd in front of the Capitol on January 6th?
-
-For any topic that we have selected, we can choose the most representative documents from that topic for closer inspection using the command findThoughts. Here, you insert the topic number or numbers of interest of interest inside the parentheses following the c after the word topics. In the example below, I have looked at the single best example of a topic for the 12th topic in the model above.
-
-```{r, echo=TRUE}
-findThoughts(jan6th.stm, texts=jan6thtestimony.trimmed, topics=c(12), n=1)
-```
-
-Try modifying this code to find a document that fits within the three topics you identified in the previous paragraph as likely to contain information about street gangs, the false electors plot, or the testimony of Cassidy Hutchinson. Read through the texts, doing any research necessary to understand their context. How well do they fit your understanding of the category they came from? What did you learn from them, and what new questions do you have after reading them? 
+How would you proceed to set up a process-tracing research design to explore those hypotheses? Spell out your plan as carefully as possible, pointing to possible data sources and modes of analysis.
 
 ## Discussion Questions
 
-How does the qualitative/quantitative distinction work when quantitative elements are used inside qualitative research? Is there a key quality of the study that makes it qualitative, no matter how many statistical or experimental techniques it uses? Or is it a matter of proportions, such that it remains qualitative as long as the statistical/experimental components are below a certain threshold? Discuss with respect to examples that make good use of different mixes of these techniques.
+In what ways does it make a difference for multi-method design whether a qualitative scholar is engaged in a form of process tracing versus some other kind of qualitative method?
 
-What are the major practical challenges to adopting quantitative/experimental designs within case studies? Do they involve resources, training, scholarly culture, epistemology, or something else? Explain and justify your answer.
+This book's discussion of process tracing has drawn on Bayesian ideas, but has not gone all the way toward full formal Bayesian math. Would it be helpful for multi-method research if qualitative scholars fully formalized their research as Bayesian statistical problems, or would that get in the way of the qualitative scholarship? 

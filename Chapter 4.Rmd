@@ -1,7 +1,7 @@
 ---
 title: "Chapter 4 Exercises and Supporting Materials"
 author: "J. Seawright"
-date: "2024-01-04"
+date: "2025-02-27"
 output:
   html_document:
     css: lab.css
@@ -17,75 +17,108 @@ library(tidyverse)
 library(openintro)
 ```
 
-## A simple regression example
+## Analyze and enhance a case study
 
-What causes inequality around the world? This question has received a great deal of research attention from social scientists of all kinds, and we will not solve it in these exercises. Nevertheless, an overly simplistic approach to the question can be useful as a stylized example. Consider the inequality dataset, available on the github site:
+A key component of designing good multi-method research based on case studies is carefully analyzing how existing case studies are actually doing their work. We cannot build productively on foundations we don't understand!
 
-```{r, echo=TRUE}
-inequality <- read.csv("https://github.com/jnseawright/practice-of-multimethod/raw/main/data/inequality.csv")
-```
+Choose a published qualitative/case study analysis on a topic that interests you, and identify the elements of that case study that contribute to causal inference. After specifying the central causal hypothesis or hypotheses, please determine which components, if any, of the research design play each of the following roles.
 
-We can start by briefly examining the contents of the dataset:
+* Help identify counterfactuals
 
-```{r, echo=TRUE}
-summary(inequality)
-```
+* Carry out process-tracing tests
 
-Let's check whether democracy is connected with lower levels of economic equality, compared with dictatorships. We can do this by carrying out a bivariate regression, using the Gini coefficient (a measure of inequality) as the dependent variable and the Polity variable (a measure of democracy) as the independent
-variable. Recall that Gini coefficients increase as inequality gets worse, and also that the Polity measure increases as democracy goes up.
+* Refine measurement
 
-```{r, echo=TRUE}
-#install.packages(jtools)
-library(jtools)
-inequalitylm.1 <- lm(Gini ~ Polity, data=inequality)
-summ(inequalitylm.1)
-```
+* Analyze causal flows
 
-What do we see here? Describe and explain the results, as well as any assumptions needed in order for them to be meaningful.
+* Discover new variables
 
-One might like to incorporate control variables, obviously. The most commonly used control variable in regressions of this kind is logged GDP. We can include that in a simple multivariate regression:
+After analyzing these elements, identify the one part of the case study that you think is the least developed. Propose a quantitative or machine-learning design that could enhance this element. Be as specific as possible. Identify particular data sources, research strategies, and statistical approaches if possible. What would we learn from the quantitative work that would enhance the existing case study?
+
+## Summarizing the January 6th Committee Testimony
+
+While investigating the invasion of the U.S. Capitol by supporters of defeated presidential candidate Donald Trump on January 6th, 2020, a committee of congresspeople received 274 publicly disclosed documents of primary-source testimony related to the event. Text transcripts are available from [the government](https://www.govinfo.gov/collection/january-6th-committee-final-report?path=/gpo/January%206th%20Committee%20Final%20Report%20and%20Supporting%20Materials%20Collection/Supporting%20Materials%20-%20Transcribed%20Interviews%20and%20Depositions/%7B%22pageSize%22%3A%22200%22%2C%22offset%22%3A%221%22%7D) and have also been downloaded into a .pdf collection on this book's [github repository](https://github.com/jnseawright/practice-of-multimethod/tree/main/jan6th).
+
+It is possible to read through all of these documents given sufficient time, and to carefully take notes on their contents! Such is the nature of qualitative research. However, it is often useful to have a synthetic, summary picture of their contents and of the relative position of each document within that overall structure. Our first step is to read the files into R. We want to start by building a list inside R of all the files that we need to read into our computer. If you have never read a .pdf file into R before, you should start by running the following command to teach your installation of R how to interact with  files:
 
 ```{r, echo=TRUE}
-inequalitylm.2 <- lm(Gini ~ Polity + I(log(GDP)), data=inequality)
-summ(inequalitylm.2)
+#install.packages("pdftools")
 ```
 
-What does this regression show us? What assumptions do we need in order for these results to be taken seriously? What, in fact, should we do next?
+To run it, remove the hashtag at the beginning, which is included so that this isn't reinstalled every time this page is recompiled.
 
-## Integrative case-study followup
-	
-Devise a research plan for case-study analysis that could test key causal inference assumptions for this regression, using resources available to you online. The two cases you should focus on are the Republic of Yemen and Zimbabwe. Describe the research you have designed to test each assumption of interest, carry out your plan, and discuss any modifications to the regression analysis that your research implies.
+Now, we can build our directory list:
 
-Be sure to look carefully at the historical causes of the cause (levels of democracy) in each country, searching for possible confounding variables as well as sources of measurement error. You may also wish to look for evidence about the causal pathway between democracy and inequality, as a way of finding such problems. Your work may lead you to discover other sorts of issues, as well; be creative in exploring the cases!
+```{r, echo=TRUE}
+library(tidyverse)
+library(pdftools)
+jan6thfiles <- paste("jan6th/",list.files(path="jan6th", pattern = "pdf$"),sep="")
+```
 
-## Case-selection Detective Work
+With this list constructed, we are now ready to read all the .pdf files into R:
 
-Using the data, determine which case-selection rule was used to select these cases. Conduct one similar case study using surprising causes case selection. How do the insights generated by this case study compare with those produced by yesterday's case studies?
+```{r, echo=TRUE}
+jan6thtestimony  <- lapply(jan6thfiles, pdf_text)
+```
 
-## Improving the Regression Using Qualitative Insights
+This command will probably take a moment, as we are loading a substantial collection of text! If you run into an error with this command, the most likely reason is that you may have your working directory set in the wrong place. Point your working directory at the place you installed the Practice of Multimethod github repository on your computer, using the setwd() command in R, and try again.
 
-On the basis of the case studies you have carried out, using the variables in the inequality data set and any others that you can add, create a refined regression analysis that does a better job of meeting key assumptions. Using your refined regression, carry out case selection using the deviant, extreme, typical, and any other rules of interest. Do you end up selecting the same cases as with the simpler regression model, or different cases? Choose one case and conduct a case study focused on it. Can you find further issues that could still be improved in the analysis?
+The jan6thtestimony object is a long list of text files, one for each of our documents of interest. For example, we can look at part of one exemplar, document number 35:
 
-## Multi-method Interview
+```{r, echo=TRUE}
+jan6thtestimony[[35]][3:4]
+```
 
-Access Lewis-Beck and Ratto's 2013 *Electoral Studies* article, ``Economic voting in Latin America: A general model.'' Which assumptions in this analysis could potentially be tested using in-depth interviews of voters? Carefully design an in-depth interview schedule to test as many assumptions of the model as possible. For each part of the interview, explain what multi-method task it is intended to fulfill and clarify the qualitative causal inferential strategy connected with it.
+The text is obviously somewhat messy, including various symbols as well as very common words that are unhelpful for statistical analysis. To clean up the text and begin to analyze it, we need to install and load two more R libraries. These are oriented toward text processing and statistical text modeling, which are methods that will help us summarize the very large amount of text that we just loaded!
 
-Now, find someone in the class and administer your interview. Take careful notes, analyze your results, and describe any issues for the model that arise from your interview. What next steps would you take if you wanted to pursue this line of research further?
+```{r, echo=TRUE}
+#install.packages("stm")
+#install.packages("tm")
+library(stm)
+library(tm)
+```
 
-## Control Variables in a Literature
-	
-This problem works well as a group activity. 
-	
-Find three to five quantitative articles on the same outcome (for example, three articles on the causes of civil wars). Make a master list of all the control variables used in those articles, as well as which articles use each variable. For each variable, determine whether it might be a good control variable that helps eliminate confounding --- but also whether it might be a bad control variable that is either an instrument or post-treatment. How close do your articles come to including the good control variables and excluding the bad ones?
+Next, we want to convert all words to lower case, remove symbols and punctuation, get rid of unhelpfully common words (i.e., stopwords), and otherwise clean up the text for analysis. There are many options we can set for this process, but we will leave everything at the defaul settings for this example. We include a ``metadata'' object that is simply a list of ID numbers for each of the documents in the data so that we can save a copy of the original texts that drops out any documents deleted because of idiosyncratic contents. This will turn out to be important later on so that we can read specific texts from the perspective of the model.  
 
-How much do the articles across a particular subject area agree about the control variables that should be used, and how much do they disagree? When they disagree, is it because they are exploring different causes, or is it for some other reason?
+```{r, echo=TRUE}
+processed_jan6th <- textProcessor(documents=jan6thtestimony, metadata=data.frame(docnumbers=1:length(jan6thtestimony)))
+prep_jan6th <- prepDocuments(processed_jan6th$documents, processed_jan6th$vocab, processed_jan6th$meta)
+jan6thtestimony.trimmed <- jan6thtestimony[c(prep_jan6th$meta$docnumbers)]
+```
 
-## Case Selection in a Literature
+Our next step is to figure out how complicated of a topic model we should use to best summarize the data. Unfortunately, the way to do that is to fit a number of different topic models of different sizes and then compare their fit statistics. This is a slow process, and can sometimes fail if the estimation process randomly draws a matrix that can't mathatically work. If you get an error, just try again and it will probably just work the next time.
 
-For a research topic that interests you, find five published case studies or multi-method studies with a significant case-study component. How, if at all, is case selection described in these studies? What advantages and disadvantages do you see in the case selection processes used? Describe how you would select cases if you were to repeat these studies, and explain why.
+There will be an enormous amount of output on your screen. Most of it isn't useful. For this step, all you want is the final plot showing the relative performance of different sizes of models, so you can ignore all of the rest.
+
+```{r, echo=TRUE}
+K <- 3:20
+jan6thkresult <- searchK(prep_jan6th$documents, prep_jan6th$vocab, K, data=prep_jan6th$meta)
+plot(jan6thkresult)
+```
+
+The plots show information that helps us choose the best model based on the number of topics. Essentially, we would like the number of topics to be as small as possible while maximizing the held-out likelihood, minimizing the residuals, maximizing the semantic coherence, and maximizing the lower bound. For our results, twelve topics seems about right.
+
+Once again, there will be a lot of output to your screen as the model is estimated. This output can be reassuring, as it shows that the computer has not frozen up, but it is not in itself very informative. Simply wait for the final results. The information we want comes from the labelTopics command.
+
+```{r, echo=TRUE}
+jan6th.stm <- stm(prep_jan6th$documents, prep_jan6th$vocab, 12, 
+               data=prep_jan6th$meta)
+
+labelTopics(jan6th.stm)
+```
+
+The overall pattern of results is complicated! Which topic would you look at for information about the role of street gangs like the Proud Boys (e.g., Enrique Tarrio) and the Oath Keepers (e.g., Steward Rhodes) in the events of January 6th? Which topic would you examine to find testimony about the false elector plot associated with Kenneth Chesebro? Which topic is most likely to contain information about Cassidy Hutchinson, the witness who, among other things, described Trump as being angry that his bodyguards didn't let him join the crowd in front of the Capitol on January 6th?
+
+For any topic that we have selected, we can choose the most representative documents from that topic for closer inspection using the command findThoughts. Here, you insert the topic number or numbers of interest of interest inside the parentheses following the c after the word topics. In the example below, I have looked at the single best example of a topic for the 12th topic in the model above.
+
+```{r, echo=TRUE}
+findThoughts(jan6th.stm, texts=jan6thtestimony.trimmed, topics=c(12), n=1)
+```
+
+Try modifying this code to find a document that fits within the three topics you identified in the previous paragraph as likely to contain information about street gangs, the false electors plot, or the testimony of Cassidy Hutchinson. Read through the texts, doing any research necessary to understand their context. How well do they fit your understanding of the category they came from? What did you learn from them, and what new questions do you have after reading them? 
 
 ## Discussion Questions
 
-Find an example of research using regression in a way that you regard as successful from your area of research. What makes this application of regression successful? What is regression used for, what assumptions are needed, and to what extent do you regard the results as credible?
+How does the qualitative/quantitative distinction work when quantitative elements are used inside qualitative research? Is there a key quality of the study that makes it qualitative, no matter how many statistical or experimental techniques it uses? Or is it a matter of proportions, such that it remains qualitative as long as the statistical/experimental components are below a certain threshold? Discuss with respect to examples that make good use of different mixes of these techniques.
 
-What difference does it make for the qualitative part of multi-method causal inference when the cases under study are historical vs. contemporary? What about when they are individuals vs. organizations vs. countries?
+What are the major practical challenges to adopting quantitative/experimental designs within case studies? Do they involve resources, training, scholarly culture, epistemology, or something else? Explain and justify your answer.
