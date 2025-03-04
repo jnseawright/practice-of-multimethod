@@ -45,13 +45,16 @@ Following the research design proposed in the book, we need a collection of text
 The following command will load the processed data directly onto your computer from github:
 
 ```{r, echo=TRUE}
-meetpressDTM <- read.csv("https://raw.githubusercontent.com/jnseawright/practice-of-multimethod/refs/heads/main/meet-the-press/meetpressdtm.csv")
+library(RCurl)
+meetpressurl <- getURL("https://raw.githubusercontent.com/jnseawright/practice-of-multimethod/refs/heads/main/meet-the-press/meetpressdtm.csv")
+meetpressDTM <- read.csv(text = meetpressurl)
 ```
 
 We are also interested in looking at the extent to which the general public is paying attention to climate as a topic. (In deeper investigation, we would want to look at whether this is positive, negative, or polarized attention, but this is a good starting place.) To measure this, we have monthly data from Google Trends on the amount of U.S. search traffic related to the topic of climate:
 
 ```{r, echo=TRUE}
-climategoogletrendsdata <- read.csv("https://raw.githubusercontent.com/jnseawright/practice-of-multimethod/refs/heads/main/meet-the-press/climate.csv")
+climategoogletrendsdataurl <- getURL("https://raw.githubusercontent.com/jnseawright/practice-of-multimethod/refs/heads/main/meet-the-press/climate.csv")
+climategoogletrendsdata <- read.csv(text = climategoogletrendsdataurl)
 ```
 
 We can now patch the two together using dates to connect them. The inner join here combines together the rows that have matching months.

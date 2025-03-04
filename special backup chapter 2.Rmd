@@ -95,7 +95,7 @@ What, in fact, does the worldwide landscape look like in terms of democratic tra
 Let us consider the intermediate indices in the Varieties of Democracy data (not the highest level of aggregation into full-scale democracy scores or even the aggregation into conceptual components, but on the other hand not the lowest level of aggregation in which there are hundreds of different indicators). We will analyze change in these indices from the year 2010 to the year 2020. Let us begin by loading the v-dem data:
 
 ```{r, echo=TRUE}
-install.packages("devtools",repos = "http://cran.us.r-project.org")
+install.packages("devtools")
 library(devtools)
 devtools::install_github("vdeminstitute/vdemdata", upgrade= "never")
 library(vdemdata)
