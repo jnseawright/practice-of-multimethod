@@ -19,7 +19,7 @@ library(openintro)
 
 ## Multi-Method Elements in Snow on Cholera
 
-In 1855, the English epidemiologist, John Snow, published a book correctly identifying the mode of transmission of cholera. This book has subsequently become a paradigmatic case of successful causal inference for social science methodologists. The book is available in [delightfully old-fashioned html](http://www.ph.ucla.edu/epi/snow/snowbook.html).
+In 1855, the English epidemiologist, John Snow, published a book correctly identifying the mode of transmission of cholera. This book has subsequently become a paradigmatic case of successful causal inference for social science methodologists. The book is available in [delightfully old-fashioned html](https://www.ph.ucla.edu/epi/snow/snowbook.html).
 
 Please examine the study, identifying quantitative and qualitative components of the causal inference. (Note that statistics was not fully developed at the time, and so quantitative components may lack some features that we expect in contemporary research.) Focus primarily on Part 3 of the book.
 
